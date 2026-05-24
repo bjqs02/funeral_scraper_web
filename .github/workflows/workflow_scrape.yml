@@ -1,0 +1,59 @@
+# Move this file to .github/workflows/scrape.yml in the new repo.
+# (It lives under scripts/ in this sub-folder so the parent chenso-playground
+#  repo does NOT try to execute it.)
+#
+# Schedule: 14:00 UTC = 22:00 UTC+8 (Asia/Taipei) daily.
+
+name: scrape
+
+on:
+  schedule:
+    - cron: "0 14 * * *"
+  workflow_dispatch:
+    inputs:
+      days:
+        description: "Days to look ahead"
+        default: "7"
+        required: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: scrape
+  cancel-in-progress: false
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run scraper
+        env:
+          # actions/checkout default fetch-depth=1, no extra deps needed —
+          # the scraper uses only stdlib (urllib, ssl, gzip, re, html, ...).
+          DAYS: ${{ github.event.inputs.days || '7' }}
+        run: |
+          python scripts/scrape_to_json.py --days "$DAYS"
+
+      - name: Commit JSON if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add site/data/latest.json
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          ts="$(TZ=Asia/Taipei date '+%Y-%m-%d %H:%M %Z')"
+          git commit -m "data: refresh latest.json (${ts})"
+          git push

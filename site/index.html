@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="台中市生命禮儀管理處 - 崇德館告別式與停柩室致意排程">
+  <title>崇德館 告別式 + 致意排程</title>
+  <link rel="icon" href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=%22.9em%22 font-size=%2290%22&gt;⚱️&lt;/text&gt;&lt;/svg&gt;">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <header>
+    <h1>⚱️ 崇德館 告別式 + 致意排程</h1>
+    <div class="meta-row" id="meta-row">
+      <span class="meta-item"><span class="meta-label">資料涵蓋範圍</span><span class="meta-value" id="meta-range">—</span></span>
+      <span class="meta-item"><span class="meta-label">更新於</span><span class="meta-value" id="meta-updated">—</span></span>
+      <span class="meta-item"><span class="meta-label">資料來源</span><span class="meta-value"><a id="meta-source" href="#" target="_blank" rel="noopener">查詢頁</a></span></span>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab" role="tab" data-tab="farewells" aria-selected="true">📋 全部場次 <span class="badge" id="badge-farewells">0</span></button>
+    <button class="tab" role="tab" data-tab="north" aria-selected="false">📍 北區戶籍 <span class="badge" id="badge-north">0</span></button>
+    <button class="tab" role="tab" data-tab="schedule" aria-selected="false">🗓️ 致意排程 <span class="badge" id="badge-schedule">0</span></button>
+    <button class="tab" role="tab" data-tab="calendar" aria-selected="false">📅 行事曆視圖</button>
+    <button class="tab" role="tab" data-tab="coffin" aria-selected="false">🪦 停柩室原始 <span class="badge" id="badge-coffin">0</span></button>
+  </nav>
+
+  <section class="filters" id="filters">
+    <div class="filter-grid">
+      <label class="filter">
+        <span>告別式日期</span>
+        <select id="f-date" multiple size="1"></select>
+      </label>
+      <label class="filter">
+        <span>禮廳</span>
+        <select id="f-hall" multiple size="1"></select>
+      </label>
+      <label class="filter">
+        <span>致意說明</span>
+        <select id="f-note" multiple size="1"></select>
+      </label>
+      <label class="filter checkbox">
+        <input type="checkbox" id="f-north" checked>
+        <span>只看戶籍北區</span>
+      </label>
+    </div>
+    <div class="filter-row-2">
+      <input type="search" id="f-kw" placeholder="🔎 關鍵字 (姓名 / 戶籍地 / 致意地點 / 禮廳)">
+      <button id="btn-reset" type="button" class="btn-secondary">清除篩選</button>
+      <button id="btn-download" type="button" class="btn-primary">⬇️ 下載目前篩選結果 (CSV)</button>
+    </div>
+    <p class="count-line" id="count-line">—</p>
+  </section>
+
+  <main id="content">
+    <div class="loading" id="loading">
+      <p>載入資料中…</p>
+      <p class="muted">第一次載入會 fetch <code>./data/latest.json</code></p>
+    </div>
+  </main>
+
+  <footer>
+    <p class="muted">
+      靜態站,資料由 GitHub Actions 每天 UTC+8 22:00 抓取。
+      最舊資料 24 小時前;若要立刻刷新請到 GitHub Actions 手動 trigger workflow。
+    </p>
+  </footer>
+
+  <script src="./app.js"></script>
+</body>
+</html>
