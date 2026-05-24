@@ -22,9 +22,9 @@ ASP.NET WebForms，需 POST + ViewState。
 funeral_scraper_purejs/
 ├── scripts/
 │   ├── scraper_core.py        # 抓取/解析/合併核心(同 funeral_scraper/scraper.py 的核心)
-│   ├── scrape_to_json.py      # 進入點:呼叫 core,輸出 site/data/latest.json
+│   ├── scrape_to_json.py      # 進入點:呼叫 core,輸出 docs/data/latest.json
 │   └── workflow_scrape.yml    # GH Actions workflow 樣板 (搬 repo 時要 mv)
-├── site/                       # GH Pages 由此 folder serve
+├── docs/                       # GH Pages 由此 folder serve
 │   ├── index.html
 │   ├── app.js                 # 純 vanilla JS,讀 latest.json 渲染
 │   ├── style.css
@@ -75,7 +75,7 @@ mv scripts/workflow_scrape.yml .github/workflows/scrape.yml
 ```bash
 # 推上去
 git add .
-git commit -m "init: funeral scraper static site"
+git commit -m "init: funeral scraper static docs"
 git push -u origin main
 ```
 
@@ -83,7 +83,7 @@ git push -u origin main
 
 1. **Settings → Pages**
 2. Source = **Deploy from a branch**
-3. Branch = **main**, folder = **`/site`**
+3. Branch = **main**, folder = **`/docs`**
 4. 儲存,等 1-2 分鐘
 5. 網址會是 `https://<你的帳號>.github.io/funeral-scraper-web/`
 
@@ -91,7 +91,7 @@ git push -u origin main
 
 到 **Actions** tab → 左欄選 **scrape** → 右上 **Run workflow** → 選 days (預設 7) → Run。
 
-跑完後 Actions 會自動 commit `site/data/latest.json` 到 main,GH Pages 會在
+跑完後 Actions 會自動 commit `docs/data/latest.json` 到 main,GH Pages 會在
 幾分鐘內 publish 更新。重新整理你的網址就會看到資料。
 
 ### 6. (選用) 確認排程啟動
@@ -115,10 +115,10 @@ python scripts/scrape_to_json.py --out foo.json  # 自訂輸出路徑
 
 只需要 Python 3.9+，**沒有 pip 依賴**(stdlib only)。
 
-### 在本機開 site
+### 在本機開 docs
 
 ```bash
-cd site && python -m http.server 8000
+cd docs && python -m http.server 8000
 # 瀏覽器開 http://localhost:8000
 ```
 
@@ -193,7 +193,7 @@ cd site && python -m http.server 8000
 改 `scripts/scraper_core.py` 的 `UNIT_CODE_CHONGDE` 常數,或者把 `scrape_to_json.py` 改成迴圈跑所有館別 → 輸出多個 JSON 檔。UI 部分要加 selector。
 
 **Q: 我能不能用 cloudflare/netlify 取代 GH Pages?**
-能,只要 host 能 serve 靜態檔即可。把 `site/` 內容上傳就好。Cron 仍用 GH Actions
+能,只要 host 能 serve 靜態檔即可。把 `docs/` 內容上傳就好。Cron 仍用 GH Actions
 (或改用該平台的 cron 方案),只要它把 `latest.json` push 到 host 認識的地方。
 
 ---

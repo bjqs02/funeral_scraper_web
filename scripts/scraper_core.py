@@ -1,7 +1,7 @@
 """Funeral + coffin-room scraper core (台中市生命禮儀管理處 - 崇德館).
 
 Re-usable library: fetch + parse + merge. No xlsx, no CLI, no dedup state.
-Consumed by scrape_to_json.py to produce site/data/latest.json for the
+Consumed by scrape_to_json.py to produce docs/data/latest.json for the
 GitHub Pages frontend.
 
 Mirror of publicStuff/funeral_scraper/scraper.py (lines 28-399); kept as a
@@ -101,7 +101,7 @@ _TAG_RE = re.compile(r"<[^>]+>")
 def _build_opener() -> urlrequest.OpenerDirector:
     # SSL verification disabled: some Micron internal environments ship an
     # incomplete CA chain that breaks verification against public gov sites.
-    # Acceptable here because the target is a public government site and the
+    # Acceptable here because the target is a public government docs and the
     # data is non-sensitive; do NOT copy this pattern for sensitive endpoints.
     ctx = ssl.create_default_context()
     ctx.check_hostname = False

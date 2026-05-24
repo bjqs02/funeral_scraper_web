@@ -1,8 +1,8 @@
-"""Fetch farewell + coffin data, merge, and write site/data/latest.json.
+"""Fetch farewell + coffin data, merge, and write docs/data/latest.json.
 
 This is the entrypoint invoked by .github/workflows/scrape.yml on a cron
-schedule. The output JSON is consumed by site/app.js running in the browser
-(GitHub Pages). No xlsx, no Streamlit, no dedup state — the static site
+schedule. The output JSON is consumed by docs/app.js running in the browser
+(GitHub Pages). No xlsx, no Streamlit, no dedup state — the static docs
 just shows whatever the latest scrape produced.
 
 Usage:
@@ -40,7 +40,7 @@ from scraper_core import (  # noqa: E402
 )
 
 ROOT = Path(__file__).resolve().parent.parent
-DEFAULT_OUT = ROOT / "site" / "data" / "latest.json"
+DEFAULT_OUT = ROOT / "docs" / "data" / "latest.json"
 
 
 def build_visit_schedule(records: list[FarewellRecord]) -> list[dict]:
