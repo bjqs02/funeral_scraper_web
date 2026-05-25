@@ -1,10 +1,10 @@
 {
   "meta": {
-    "generated_at_utc": "2026-05-25T23:00:49+00:00",
+    "generated_at_utc": "2026-05-25T23:26:10+00:00",
     "date_range": {
       "start": "2026/05/25",
-      "end": "2026/06/03",
-      "days": 10
+      "end": "2026/05/31",
+      "days": 7
     },
     "unit": "崇德館",
     "source": {
