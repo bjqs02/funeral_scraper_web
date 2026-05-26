@@ -8,7 +8,7 @@ name: scrape
 
 on:
   schedule:
-    - cron: "0 14 * * *"
+    - cron: "23 14 * * *"
   workflow_dispatch:
     inputs:
       days:
@@ -26,7 +26,7 @@ concurrency:
 jobs:
   scrape:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 40
 
     steps:
       - name: Checkout
@@ -37,19 +37,29 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Run scraper
+      - name: Run scraper (with retry)
         env:
           # actions/checkout default fetch-depth=1, no extra deps needed —
           # the scraper uses only stdlib (urllib, ssl, gzip, re, html, ...).
           DAYS: ${{ github.event.inputs.days || '7' }}
         run: |
-          python scripts/scrape_to_json.py --days "$DAYS"
+          for i in 1 2 3; do
+            echo "=== Attempt $i ==="
+            python scripts/scrape_to_json.py --days "$DAYS" && break
+            if [ $i -lt 3 ]; then
+              echo "Attempt $i failed. Waiting 5 minutes before retry..."
+              sleep 300
+            else
+              echo "All 3 attempts failed."
+              exit 1
+            fi
+          done
 
       - name: Commit JSON if changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/data/latest.json
+          git add site/data/latest.json
           if git diff --cached --quiet; then
             echo "No changes to commit."
             exit 0
