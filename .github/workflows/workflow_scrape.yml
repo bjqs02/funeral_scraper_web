@@ -8,7 +8,7 @@ name: scrape
 
 on:
   schedule:
-    - cron: "23 14 * * *"
+    - cron: "23 20 * * *"
   workflow_dispatch:
     inputs:
       days:
