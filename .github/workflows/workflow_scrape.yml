@@ -41,7 +41,7 @@ jobs:
         env:
           # actions/checkout default fetch-depth=1, no extra deps needed —
           # the scraper uses only stdlib (urllib, ssl, gzip, re, html, ...).
-          DAYS: ${{ github.event.inputs.days || '7' }}
+          DAYS: ${{ github.event.inputs.days || '14' }}
         run: |
           for i in 1 2 3; do
             echo "=== Attempt $i ==="
