@@ -139,7 +139,7 @@ def _open_with_retry(opener: urlrequest.OpenerDirector, req:urlrequest.Request) 
         except Exception as exc:
             last_exc = exc
             if attempt < REQUEST_MAX_ATTEMPTS:
-                time.sleep(REQUEST_ RETRY_BACKOFF_SEC * attempt)
+                time.sleep(REQUEST_RETRY_BACKOFF_SEC * attempt)
     raise last_exc
 
 def _post_form(url: str, fields: dict[str, str]) -> str:
