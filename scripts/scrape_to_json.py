@@ -179,6 +179,14 @@ def main(argv: list[str] | None = None) -> int:
         ap.error("--days 應為 1~60")
 
     payload = scrape(days=args.days)
+    if not payload["farewells"]:
+        if args.out.exists():
+            print("[error] 抓取結果為 0 筆,保留現有JSON 不覆寫", file=sys.stderr)
+            return 1
+        print("[error] 抓取結果為 0 筆且無既有JSON 可保留", file=sys.stderr)
+        return 1
+        
+    args.out.parent.m kdir(parents=True, exist_ok=True)
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(
         json.dumps(payload, ensure_ascii=False, indent=2),
