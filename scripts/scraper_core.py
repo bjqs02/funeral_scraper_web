@@ -135,7 +135,7 @@ def _open_with_retry(opener: urlrequest.OpenerDirector, req:urlrequest.Request) 
     for attempt in range(1, REQUEST_MAX_ATTEMPTS + 1):
         try:
             with opener.open(req, timeout =REQUEST_TIMEOUT_SEC) as resp:
-                return_read(resp) 
+                return _read(resp) 
         except Exception as exc:
             last_exc = exc
             if attempt < REQUEST_MAX_ATTEMPTS:
