@@ -186,7 +186,7 @@ def main(argv: list[str] | None = None) -> int:
         print("[error] 抓取結果為 0 筆且無既有JSON 可保留", file=sys.stderr)
         return 1
         
-    args.out.parent.m kdir(parents=True, exist_ok=True)
+    args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(
         json.dumps(payload, ensure_ascii=False, indent=2),
