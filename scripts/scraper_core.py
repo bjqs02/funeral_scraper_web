@@ -151,7 +151,7 @@ def _post_form(url: str, fields: dict[str, str]) -> str:
         "Accept-Encoding": "gzip",
         "Accept": "text/html,application/xhtml+xml",
     }
-    page = _open_wuth_retry(
+    page = _open_with_retry(
         opener, urlrequest.Request(url, headers=headers_get))
     tokens = _get_form_tokens(page)
 
