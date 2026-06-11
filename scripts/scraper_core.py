@@ -40,6 +40,9 @@ USER_AGENT = (
 REQUEST_TIMEOUT_SEC = 30
 SLEEP_BETWEEN_REQUESTS_SEC = 1.5
 
+REQUEST_MAX_ATTEMPTS = 3
+REQUEST_RETRY_BACKOFF_SEC = 3.0
+
 # Colour codes used by CoffinUse.aspx to distinguish gender.
 # Verified empirically by cross-matching 11/11 names from Farewell page
 # (gender column) against the same names appearing on CoffinUse page.
@@ -127,7 +130,17 @@ def _get_form_tokens(html_text: str) -> dict[str, str]:
             raise RuntimeError(f"找不到 ASP.NET 表單欄位: {key}")
         tokens[key] = m.group(1)
     return tokens
-
+def _open_with_retry(opener: urlrequest.OpenerDirector, req:urlrequest.Request) -> str:
+    last_exc: Exception | None = None
+    for attempt in range(1, REQUEST_MAX_ATTEMPTS + 1):
+        try:
+            with opener.open(req, timeout =REQUEST_TIMEOUT_SEC) as resp:
+                return_read(resp) 
+        except Exception as exc:
+            last_exc = exc
+            if attempt < REQUEST_MAX_ATTEMPTS:
+                time.sleep(REQUEST_ RETRY_BACKOFF_SEC * attempt)
+    raise last_exc
 
 def _post_form(url: str, fields: dict[str, str]) -> str:
     """GET url to pick up ViewState + session cookie, then POST `fields` plus
@@ -138,11 +151,8 @@ def _post_form(url: str, fields: dict[str, str]) -> str:
         "Accept-Encoding": "gzip",
         "Accept": "text/html,application/xhtml+xml",
     }
-    with opener.open(
-        urlrequest.Request(url, headers=headers_get),
-        timeout=REQUEST_TIMEOUT_SEC,
-    ) as resp:
-        page = _read(resp)
+    page = _open_wuth_retry(
+        opener, urlrequest.Request(url, headers=headers_get))
     tokens = _get_form_tokens(page)
 
     body = {
@@ -158,18 +168,16 @@ def _post_form(url: str, fields: dict[str, str]) -> str:
         "Referer": url,
         "Origin": "https://mortuary.taichung.gov.tw",
     }
-    with opener.open(
+    return _open_with_retry(
+        opener,
         urlrequest.Request(
             url,
             data=urlencode(body).encode("utf-8"),
             method="POST",
             headers=headers_post,
         ),
-        timeout=REQUEST_TIMEOUT_SEC,
-    ) as resp:
-        return _read(resp)
-
-
+    )
+    
 def _strip_tags(s: str) -> str:
     text = _TAG_RE.sub("", s)
     return " ".join(unescape(text).split()).strip()
